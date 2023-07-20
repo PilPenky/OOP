@@ -3,12 +3,15 @@ package Lesson_5.Homework.View;
 import Lesson_5.Homework.Controller.Controller;
 import Lesson_5.Homework.Service.Birth;
 import Lesson_5.Homework.Service.FormatContact;
+import Lesson_5.Homework.Service.UserActions;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Controller controller = new Controller();
+        UserActions userActions = new UserActions();
 
         controller.addContact("Артур", 900100222, "atr@mail.ru", new Birth(2023, 07, 18), FormatContact.DB);
         controller.addContact("Олик", 980777555, "kot-olik@mail.ru", new Birth(2020, 06, 27), FormatContact.DB);
@@ -32,56 +35,24 @@ public class Main {
                 controller.getAllContacts();
             }
             if (num.equals(2)) {
-                System.out.println("Укажите имя контакта: ");
-                String name = scannerNum.next();
-                System.out.println("Укажите номер телефона контакта: ");
-                Integer phoneNumber = scannerNum.nextInt();
-                System.out.println("Укажите электронную почту контакта: ");
-                String email = scannerNum.next();
-                System.out.println("Укажите год рождения контакта: ");
-                Integer yearBirth = scannerNum.nextInt();
-                System.out.println("Укажите месяц рождения контакта: ");
-                Integer monthBirth = scannerNum.nextInt();
-                System.out.println("Укажите день рождения контакта: ");
-                Integer dayBirth = scannerNum.nextInt();
-                System.out.println("Укажите формат контакта:\n" +
-                        "1 - .vcf-формат;\n" +
-                        "2 - .db-формат.");
-                Integer numFormat = scannerNum.nextInt();
-                FormatContact formatContact = null;
-                if(numFormat.equals(1)){
-                    formatContact = FormatContact.VCF;
-                }
-                else if(numFormat.equals(2)){
-                    formatContact = FormatContact.DB;
-                }
+                List dataContact = userActions.addNewContact();
+                String name = (String) dataContact.get(0);
+                Integer phoneNumber = (Integer) dataContact.get(1);
+                String email = (String) dataContact.get(2);
+                Birth birth = (Birth) dataContact.get(3);
+                FormatContact formatContact = (FormatContact) dataContact.get(4);
 
-                controller.addContact(name, phoneNumber, email, new Birth(yearBirth, monthBirth, dayBirth), formatContact);
+
+                controller.addContact(name, phoneNumber, email, birth, formatContact);
             }
             if (num.equals(3)) {
-                System.out.println("Укажите Id контакта, который хотите удалить: ");
-                Integer numRemove = scannerNum.nextInt();
-                controller.removeContact(numRemove);
+                controller.removeContact(userActions.removeContact());
             }
             if(num.equals(4)){
-                System.out.println("Укажите формат контактов, которые хотите выгрузить:\n" +
-                        "1 - .vcf-формат;\n" +
-                        "2 - .db-формат;\n" +
-                        "3 - Все форматы.");
-                Integer numFormat = scannerNum.nextInt();
-                if(numFormat.equals(1)){
-                    controller.exportContact(FormatContact.VCF);
-                }
-                else if(numFormat.equals(2)){
-                    controller.exportContact(FormatContact.DB);
-                }
-                else if(numFormat.equals(3)){
-                    controller.exportContact(FormatContact.ALLFORMAT);
-                }
+                controller.exportContact(userActions.exportContact());
             }
-
             if (num.equals(0)) {
-                System.out.println("До свидания!");
+                return;
             }
 
             System.out.println();
@@ -94,5 +65,6 @@ public class Main {
                     "<<Укажите номер команды: >>");
             num = scannerNum.nextInt();
         }
+        System.out.println("До свидания!");
     }
 }
